@@ -1,0 +1,16 @@
+.color-box{
+    width: 500px;
+    height: 500px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .3s ease-in;
+    margin: auto;
+}
+
+
+.color-box p{
+    text-align: center;
+    padding-top: 40%;
+    color: rgb(0, 0, 0);
+    font-size: 70px;
+}
