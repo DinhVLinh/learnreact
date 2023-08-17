@@ -1,12 +1,37 @@
-import React, { useMemo } from "react";
-import PropTypes from "prop-types";
-import { Box, Chip } from "@mui/material";
 import { Checkbox } from "@material-ui/core";
+import { Box, Chip } from "@mui/material";
+import { type } from "@testing-library/user-event/dist/type";
+import categoryApi from "api/categoryApi";
+import PropTypes from "prop-types";
+import { useEffect, useMemo, useRef } from "react";
 
 FilterViewer.propTypes = {
   filter: PropTypes.object,
   onChange: PropTypes.func,
 };
+
+function GetLabelForView() {
+  let labelList = useRef([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const reponse = await categoryApi.getAll();
+        // console.log({ reponse });
+        labelList.current = reponse.map((x) => ({
+          id: x.id,
+          name: x.name,
+        }));
+      } catch (error) {
+        console.log("Failed for get cart", error);
+      }
+    })();
+  }, []);
+
+  return labelList.current.forEach((x) => {
+    return x.name;
+  });
+}
 
 const FILTER_LIST = [
   {
@@ -44,12 +69,21 @@ const FILTER_LIST = [
 
   {
     id: 3,
-    getLabel: (filter) =>
-      `Tu ${filter.salePrice_lte} den ${filter.salePrice_gte} `,
+    getLabel: (filter) => {
+      return `Tu ${filter.salePrice_gte} den ${filter.salePrice_lte} `;
+    },
     isActive: () => true,
-    isVisble: (filter) =>
-      Object.keys(filter).includes("salePrice_lte") &&
-      Object.keys(filter).includes("salePrice_gte"),
+    isVisble: (filter) => {
+      if (
+        Number.parseInt(filter.salePrice_lte) > 0 ||
+        Number.parseInt(filter.salePrice_gte) > 0
+      ) {
+        return (
+          Object.keys(filter).includes("salePrice_lte") &&
+          Object.keys(filter).includes("salePrice_gte")
+        );
+      }
+    },
     isRemoveAble: true,
     onRemove: (filter) => {
       const newFilter = { ...filter };
@@ -61,8 +95,18 @@ const FILTER_LIST = [
     onToggle: () => {},
   },
 
+  // {
+  //   id: 4,
+  //   getLabel: () => GetLabelForView(),
+  //   isActive: () => true,
+  //   isVisble: (filter) => true,
+  //   isRemoveAble: true,
+  //   onRemove: (filter) => {},
+  //   onToggle: () => {},
+  // },
+
   {
-    id: 4,
+    id: 5,
     getLabel: () => "Xoa tat ca",
     isActive: () => true,
     isVisble: () => true,
@@ -70,13 +114,11 @@ const FILTER_LIST = [
     onRemove: () => {},
     onToggle: (filters) => {
       const newFilter = { ...filters };
-      if (newFilter.isFreeShip) {
-        delete newFilter.isFreeShip;
-        delete newFilter.isPromotion;
-        delete newFilter.salePrice_lte;
-        delete newFilter.salePrice_gte;
-        <Checkbox checked={false} />;
-      }
+      delete newFilter.isFreeShip;
+      delete newFilter.isPromotion;
+      delete newFilter.salePrice_lte;
+      delete newFilter.salePrice_gte;
+
       return newFilter;
     },
   },
