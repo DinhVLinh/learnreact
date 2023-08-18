@@ -16,16 +16,18 @@ function InputField(props) {
   return (
     <FormControl fullWidth sx={{ mt: "2rem" }}>
       <Controller
+        id={name}
         name={name}
         control={control}
         render={({ field }) => (
           <TextField
+            type="number"
             {...addErrorIntoField(errors[name])}
             value={values}
             onChange={handeFormChange}
             {...field}
             label={label}
-            variant="filled"
+            variant="outlined"
             InputProps={inputProps}
             required
           />

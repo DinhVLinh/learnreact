@@ -35,7 +35,7 @@ function FilterByCart({ onChange }) {
     <Box>
       <Typography variant="body2">DANH MỤC SẢN PHẨM : </Typography>
       <ul style={{ listStyle: "none" }}>
-        {categoryList.map((cart) => (
+        {categoryList.map((cart, index) => (
           <li
             style={{
               cursor: "pointer",
@@ -45,7 +45,10 @@ function FilterByCart({ onChange }) {
             key={cart.id}
             onClick={() => handleCartClick(cart)}
           >
-            <Typography variant="body2"> {cart.name}</Typography>
+            <Typography variant="body2">
+              {" "}
+              {`${index + 1}. ${cart.name}`}
+            </Typography>
           </li>
         ))}
       </ul>

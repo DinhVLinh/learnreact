@@ -135,10 +135,12 @@ function ListPage(props) {
       <Container>
         <Grid container spacing={1}>
           <Grid item className={classes.left}>
-            <ProductFilter
-              filter={queryParams}
-              onChange={handleFiltersChange}
-            ></ProductFilter>
+            <Paper>
+              <ProductFilter
+                filter={queryParams}
+                onChange={handleFiltersChange}
+              ></ProductFilter>
+            </Paper>
           </Grid>
 
           <Grid item className={classes.right}>

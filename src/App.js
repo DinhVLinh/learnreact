@@ -112,7 +112,7 @@ function App() {
         <Route path="/clock" component={Clock} />
         <Route path="/mu-list" component={MuFeatures} />
         <Route path="/posts" component={TodoFeatues} />
-        <Route path="/product" component={ProductsFeature} />
+        <Route path="/products" component={ProductsFeature} />
         <Route component={NotFound} />
       </Switch>
     </div>

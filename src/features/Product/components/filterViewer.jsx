@@ -95,15 +95,46 @@ const FILTER_LIST = [
     onToggle: () => {},
   },
 
-  // {
-  //   id: 4,
-  //   getLabel: () => GetLabelForView(),
-  //   isActive: () => true,
-  //   isVisble: (filter) => true,
-  //   isRemoveAble: true,
-  //   onRemove: (filter) => {},
-  //   onToggle: () => {},
-  // },
+  {
+    id: 4,
+    getLabel: (filter) => {
+      console.log(filter);
+      let filterName = "";
+      const filterId = +filter["category.id"];
+      switch (filterId) {
+        case 1:
+          filterName = "Thời trang";
+          break;
+        case 2:
+          filterName = "Khẩu trang";
+          break;
+        case 3:
+          filterName = "Làm đẹp";
+          break;
+        case 4:
+          filterName = "Laptop";
+          break;
+        case 5:
+          filterName = "Ổ cứng";
+          break;
+        case 6:
+          filterName = "Điện thoại";
+          break;
+
+        default:
+          break;
+      }
+
+      return filterName;
+    },
+    isActive: () => true,
+    isVisble: (filter) => filter["category.id"],
+    isRemoveAble: true,
+    onRemove: (filter) => {
+      delete filter["category.id"];
+    },
+    onToggle: () => {},
+  },
 
   {
     id: 5,
@@ -116,6 +147,7 @@ const FILTER_LIST = [
       const newFilter = { ...filters };
       delete newFilter.isFreeShip;
       delete newFilter.isPromotion;
+      delete newFilter["category.id"];
       delete newFilter.salePrice_lte;
       delete newFilter.salePrice_gte;
 

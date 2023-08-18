@@ -82,7 +82,7 @@ export default function Header() {
             <Button sx={{ color: "#fff" }}>MUN</Button>
           </NavLink>
 
-          <NavLink to="/product">
+          <NavLink to="/products">
             {" "}
             <Button sx={{ color: "#fff" }}>Product</Button>
           </NavLink>
