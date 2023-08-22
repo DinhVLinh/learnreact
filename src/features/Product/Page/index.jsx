@@ -78,6 +78,7 @@ function ListPage(props) {
 
         setProductList(data);
         setPagination(pagination);
+        console.log(data);
       } catch (error) {
         console.log("Failed for get data", error);
       }
@@ -162,7 +163,9 @@ function ListPage(props) {
               <Box className={classes.pagination}>
                 <Pagination
                   onChange={handlePageChange}
-                  count={Number(Math.ceil(pagination.total / pagination.limit))}
+                  count={Number.parseInt(
+                    Math.ceil(pagination.total / pagination.limit)
+                  )}
                   page={pagination.page}
                   color="primary"
                 />

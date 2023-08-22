@@ -1,4 +1,8 @@
+import { Badge, IconButton, Menu, MenuItem } from "@material-ui/core";
+import { AccountCircle } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 import CodeIcon from "@mui/icons-material/Code";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -7,15 +11,15 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Register from "../../features/Auth/components/Register/index";
-import { useState } from "react";
-import { Link, NavLink } from "react-router-dom/cjs/react-router-dom.min";
-import CloseIcon from "@mui/icons-material/Close";
 import Login from "features/Auth/components/Login";
-import { useDispatch, useSelector } from "react-redux";
-import { IconButton, Menu, MenuItem } from "@material-ui/core";
 import { logout } from "features/Auth/userSlice";
-import { AccountCircle } from "@mui/icons-material";
+import { cartItemsCountSelector } from "features/Product/components/Cart/selector";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { Link, NavLink } from "react-router-dom/cjs/react-router-dom.min";
+import Register from "../../features/Auth/components/Register/index";
+import ProductMiniCart from "features/Product/components/MiniCart/ProductMiniCart";
 
 const MODE = {
   REGISTER: "register",
@@ -34,7 +38,14 @@ export default function Header() {
   const stateLoggedIn = useSelector((state) => state.user.current);
   const isLoggedIn = !!stateLoggedIn.id;
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openMiniCart, setOpenMiniCart] = useState(null);
+
   const dispatch = useDispatch();
+  const countProduct = useSelector(cartItemsCountSelector);
+  const history = useHistory();
+
+  localStorage.setItem("countProduct", JSON.stringify(countProduct));
+  const saveCountCart = JSON.parse(localStorage.getItem("countProduct"));
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -52,10 +63,22 @@ export default function Header() {
     setAnchorEl(null);
   };
 
+  const handleClickMiniCart = (event) => {
+    setOpenMiniCart(event.currentTarget);
+  };
+
+  const handleCloseMiniCart = () => {
+    setOpenMiniCart(null);
+  };
+
   const handleClickLogout = () => {
     const action = logout();
     dispatch(action);
   };
+
+  function handleClickCartButton() {
+    history.push("/carts");
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -98,6 +121,19 @@ export default function Header() {
           )}
 
           {isLoggedIn && (
+            <IconButton
+              size="large"
+              aria-label="show 4 new mails"
+              color="inherit"
+              onClick={handleClickMiniCart}
+            >
+              <Badge badgeContent={saveCountCart} color="error">
+                <ShoppingCartIcon></ShoppingCartIcon>
+              </Badge>
+            </IconButton>
+          )}
+
+          {isLoggedIn && (
             <IconButton onClick={handleClickUserMenu}>
               <AccountCircle
                 sx={{ fontSize: "30px", color: "#fff" }}
@@ -126,6 +162,29 @@ export default function Header() {
         <MenuItem onClick={handleClickLogout}>Logout</MenuItem>
       </Menu>
 
+      <Menu
+        keepMounted
+        anchorEl={openMiniCart}
+        open={Boolean(openMiniCart)}
+        onClose={handleCloseUserMenu}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        getContentAnchorEl={null}
+        style={{ padding: "30px" }}
+      >
+        <MenuItem onClick={handleCloseMiniCart}>
+          <Typography>da them vao gio hang</Typography>
+        </MenuItem>
+        <MenuItem>
+          <ProductMiniCart></ProductMiniCart>
+        </MenuItem>
+      </Menu>
       <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
         <DialogActions>
           <Button onClick={handleClose}>

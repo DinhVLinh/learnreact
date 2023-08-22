@@ -1,10 +1,27 @@
-import { Box, Container, Grid, Paper, makeStyles } from "@material-ui/core";
-import ProductThumbnail from "../components/ProductThumbnail";
-import { useEffect, useState } from "react";
+import {
+  Box,
+  Container,
+  Grid,
+  LinearProgress,
+  Paper,
+  makeStyles,
+} from "@material-ui/core";
 import productApi from "api/productsApi";
-import { useRouteMatch } from "react-router-dom/cjs/react-router-dom";
-import ProductInfo from "../components/ProductInfo";
+import { useEffect, useState } from "react";
+import {
+  Route,
+  Switch,
+  useRouteMatch,
+} from "react-router-dom/cjs/react-router-dom";
 import AddToCartForm from "../components/AddToCartForm";
+import ProductDesc from "../components/ProductDesc";
+import ProductInfo from "../components/ProductInfo";
+import ProductMenu from "../components/ProductMenu";
+import ProductThumbnail from "../components/ProductThumbnail";
+import ProductAdditional from "../components/ProductAdditional";
+import ProductReviews from "../components/ProductReviews";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../Product/components/Cart/cartSlice";
 
 DetailsPage.propTypes = {};
 const useStyle = makeStyles((theme) => ({
@@ -29,9 +46,11 @@ function DetailsPage() {
 
   const {
     params: { productId },
+    url,
   } = useRouteMatch();
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState({});
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
@@ -48,11 +67,20 @@ function DetailsPage() {
   }, [productId]);
 
   if (loading) {
-    return <Box>Loading</Box>;
+    return (
+      <Box>
+        <LinearProgress></LinearProgress>
+      </Box>
+    );
   }
 
   function handleAddToCardSunmit(formValues) {
-    console.log(formValues);
+    const action = addToCart({
+      id: product.id,
+      product: product,
+      quantity: formValues.quantity,
+    });
+    dispatch(action);
   }
 
   return (
@@ -65,10 +93,24 @@ function DetailsPage() {
             </Grid>
             <Grid item className={classes.right}>
               <ProductInfo product={product}></ProductInfo>
-              <AddToCartForm onSubmit={handleAddToCardSunmit} />
+              <AddToCartForm
+                onSubmit={handleAddToCardSunmit}
+                product={product}
+              />
             </Grid>
           </Grid>
         </Paper>
+
+        <ProductMenu></ProductMenu>
+
+        <Switch>
+          <Route path={url} exact>
+            <ProductDesc product={product} />
+          </Route>
+
+          <Route path={`${url}/additional`} component={ProductAdditional} />
+          <Route path={`${url}/reviews`} component={ProductReviews} />
+        </Switch>
       </Container>
     </Box>
   );

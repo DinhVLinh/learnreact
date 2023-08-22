@@ -21,7 +21,6 @@ function InputField(props) {
         control={control}
         render={({ field }) => (
           <TextField
-            type="number"
             {...addErrorIntoField(errors[name])}
             value={values}
             onChange={handeFormChange}
@@ -29,7 +28,7 @@ function InputField(props) {
             label={label}
             variant="outlined"
             InputProps={inputProps}
-            required
+            requiredz
           />
         )}
       />

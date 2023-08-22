@@ -9,21 +9,16 @@ import { RemoveCircleOutline, AddCircleOutline } from "@mui/icons-material";
 QuantityField.propTypes = {};
 
 function QuantityField(props) {
-  const { label, name, inputProps, control, errors } = props;
-  const [values, setValues] = useState(1);
+  const { label, name, inputProps, control, errors, form } = props;
+  if (!form) return;
+  const value = form.watch(name);
 
   function handleDecreaseCart() {
-    setValues(Number.parseInt(values) ? Number.parseInt(values) - 1 : 1);
-    console.log(Number.parseInt(values));
+    form.setValue(name, value ? value - 1 : 1);
   }
 
-  function handleIncreaseCart(e) {
-    setValues(Number.parseInt(values) ? Number.parseInt(values) + 1 : 1);
-    console.log(Number.parseInt(values));
-  }
-
-  function handeFormChange(e) {
-    setValues(e.target.value);
+  function handleIncreaseCart() {
+    form.setValue(name, value ? value + 1 : 1);
   }
 
   return (
@@ -31,23 +26,20 @@ function QuantityField(props) {
       <Controller
         name={name}
         control={control}
-        render={({ field }) => (
+        render={({ field, values }) => (
           <Box>
             <IconButton onClick={handleDecreaseCart}>
               <RemoveCircleOutline></RemoveCircleOutline>
             </IconButton>
-
             <TextField
-              id={name}
-              type="number"
               {...addErrorIntoField(errors[name])}
               value={values}
+              onChange={(e) => form.setValue(e.target.value)}
               {...field}
-              onChange={handeFormChange}
               label={label}
               variant="outlined"
               InputProps={inputProps}
-              size="small"
+              required
             />
             <IconButton onClick={handleIncreaseCart}>
               <AddCircleOutline></AddCircleOutline>

@@ -18,6 +18,7 @@ import Header from "components/Header";
 import { Button } from "@mui/material";
 import { useSnackbar } from "notistack";
 import ProductsFeature from "features/Product";
+import CartProduct from "features/Product/components/Cart";
 
 function App() {
   // useEffect(() => {
@@ -113,6 +114,8 @@ function App() {
         <Route path="/mu-list" component={MuFeatures} />
         <Route path="/posts" component={TodoFeatues} />
         <Route path="/products" component={ProductsFeature} />
+        <Route path="/carts" component={CartProduct} />
+
         <Route component={NotFound} />
       </Switch>
     </div>
