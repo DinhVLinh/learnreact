@@ -3,14 +3,13 @@ import { Box, Button } from "@material-ui/core";
 import QuantityField from "components/form-controls/QuantityField/QuantityField";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import * as yup from "yup";
 
 AddToCartForm.propTypes = {
   onSubmit: PropTypes.func,
 };
 
-function AddToCartForm({ onSubmit, product }) {
+function AddToCartForm({ onSubmit }) {
   const schema = yup.object().shape({
     quantity: yup
       .number()
@@ -30,11 +29,6 @@ function AddToCartForm({ onSubmit, product }) {
 
   async function handleAddToCardSunmit(formValues) {
     if (onSubmit) await onSubmit(formValues);
-  }
-  const history = useHistory();
-
-  function handleClick() {
-    history.push(`/carts/${product.id}`);
   }
 
   return (
@@ -58,20 +52,9 @@ function AddToCartForm({ onSubmit, product }) {
         form={form}
       />
 
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Button type="submit" variant="contained" color="primary">
-          Buy
-        </Button>
-
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          onClick={handleClick}
-        >
-          View To Cart
-        </Button>
-      </Box>
+      <Button type="submit" variant="contained" color="primary">
+        Buy
+      </Button>
     </Box>
   );
 }

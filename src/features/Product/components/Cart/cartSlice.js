@@ -26,15 +26,6 @@ const counterSlice = createSlice({
       }
     },
 
-    setQuantityCart(state, action) {
-      const { id, quantity } = action.payload;
-
-      const index = state.cartItems.findIndex((x) => x.id === id);
-      if (index >= 0) {
-        state.cartItems[index] = quantity;
-      }
-    },
-
     removeCartItem(state, action) {
       const idNeedRemove = action.payload;
       state.cartItems.filter((x) => x.id !== idNeedRemove);

@@ -65,6 +65,7 @@ function DetailsPage() {
       setLoading(false);
     })();
   }, [productId]);
+  console.log(product, "hiiii");
 
   if (loading) {
     return (
@@ -80,6 +81,7 @@ function DetailsPage() {
       product: product,
       quantity: formValues.quantity,
     });
+    // console.log(action);
     dispatch(action);
   }
 
@@ -93,10 +95,7 @@ function DetailsPage() {
             </Grid>
             <Grid item className={classes.right}>
               <ProductInfo product={product}></ProductInfo>
-              <AddToCartForm
-                onSubmit={handleAddToCardSunmit}
-                product={product}
-              />
+              <AddToCartForm onSubmit={handleAddToCardSunmit} />
             </Grid>
           </Grid>
         </Paper>

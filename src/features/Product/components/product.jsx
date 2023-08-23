@@ -16,14 +16,11 @@ function Product({ product }) {
   function handleClick() {
     history.push(`/products/${product.id}`);
   }
-
   return (
     <Box
       padding={1}
       minHeight={"215px"}
-      sx={{
-        cursor: "pointer",
-      }}
+      sx={{ cursor: "pointer" }}
       onClick={handleClick}
     >
       <Box padding={1}>

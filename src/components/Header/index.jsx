@@ -1,8 +1,4 @@
-import { Badge, IconButton, Menu, MenuItem } from "@material-ui/core";
-import { AccountCircle } from "@mui/icons-material";
-import CloseIcon from "@mui/icons-material/Close";
 import CodeIcon from "@mui/icons-material/Code";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -11,15 +7,18 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Login from "features/Auth/components/Login";
-import { logout } from "features/Auth/userSlice";
-import { cartItemsCountSelector } from "features/Product/components/Cart/selector";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
-import { Link, NavLink } from "react-router-dom/cjs/react-router-dom.min";
 import Register from "../../features/Auth/components/Register/index";
-import ProductMiniCart from "features/Product/components/MiniCart/ProductMiniCart";
+import { useState } from "react";
+import { Link, NavLink } from "react-router-dom/cjs/react-router-dom.min";
+import CloseIcon from "@mui/icons-material/Close";
+import Login from "features/Auth/components/Login";
+import { useDispatch, useSelector } from "react-redux";
+import { Badge, IconButton, Menu, MenuItem } from "@material-ui/core";
+import { logout } from "features/Auth/userSlice";
+import { AccountCircle } from "@mui/icons-material";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { cartItemsCountSelector } from "features/Product/components/Cart/selector";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 const MODE = {
   REGISTER: "register",
@@ -38,14 +37,15 @@ export default function Header() {
   const stateLoggedIn = useSelector((state) => state.user.current);
   const isLoggedIn = !!stateLoggedIn.id;
   const [anchorEl, setAnchorEl] = useState(null);
-  const [openMiniCart, setOpenMiniCart] = useState(null);
-
   const dispatch = useDispatch();
   const countProduct = useSelector(cartItemsCountSelector);
   const history = useHistory();
 
   localStorage.setItem("countProduct", JSON.stringify(countProduct));
   const saveCountCart = JSON.parse(localStorage.getItem("countProduct"));
+  const proList = useSelector((state) => state.cart.cartItems);
+
+  const [openCart, setOpenCart] = useState(null);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -64,11 +64,11 @@ export default function Header() {
   };
 
   const handleClickMiniCart = (event) => {
-    setOpenMiniCart(event.currentTarget);
+    setOpenCart(event.currentTarget);
   };
 
   const handleCloseMiniCart = () => {
-    setOpenMiniCart(null);
+    setOpenCart(null);
   };
 
   const handleClickLogout = () => {
@@ -164,9 +164,9 @@ export default function Header() {
 
       <Menu
         keepMounted
-        anchorEl={openMiniCart}
-        open={Boolean(openMiniCart)}
-        onClose={handleCloseUserMenu}
+        anchorEl={openCart}
+        open={Boolean(openCart)}
+        onClose={handleCloseMiniCart}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "right",
@@ -176,15 +176,53 @@ export default function Header() {
           horizontal: "right",
         }}
         getContentAnchorEl={null}
-        style={{ padding: "30px" }}
       >
-        <MenuItem onClick={handleCloseMiniCart}>
-          <Typography>da them vao gio hang</Typography>
-        </MenuItem>
-        <MenuItem>
-          <ProductMiniCart></ProductMiniCart>
-        </MenuItem>
+        {saveCountCart > 0 ? (
+          <ul
+            style={{
+              listStyle: "none",
+              padding: 0,
+            }}
+          >
+            {proList.map((pro) => (
+              <li style={{ padding: "10px 20px", width: "300px" }}>
+                <MenuItem>
+                  <Box style={{ display: "flex", flexDirection: "row" }}>
+                    <Box padding={1}>
+                      <img
+                        src={pro.product.thumbnail?.url}
+                        alt={pro.product.name}
+                        width="100%"
+                      />
+                    </Box>
+
+                    <Box>
+                      <Typography>{pro.product.name}</Typography>
+                      <Typography>
+                        <Box component={"span"}>
+                          {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(pro.product.salePrice)}
+                        </Box>
+                        {pro.product.promotionPercent > 0
+                          ? `- ${pro.product.promotionPercent}%`
+                          : ""}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </MenuItem>
+              </li>
+            ))}
+            <Button onClick={handleClickCartButton}>View To Cart</Button>
+          </ul>
+        ) : (
+          <MenuItem>
+            <Typography>Khong co san pham</Typography>
+          </MenuItem>
+        )}
       </Menu>
+
       <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
         <DialogActions>
           <Button onClick={handleClose}>
